@@ -1,11 +1,17 @@
 CFLAGS=-std=c99 -Wall -Wextra -Werror -pedantic -g
 
+runfile=lishp
 cfiles=$(wildcard *.c)
 ofiles=$(patsubst %.c, %.o, $(cfiles))
 
-all: lishp
+.PHONY: all run clean
 
-lishp: $(ofiles)
+all: $(runfile)
+
+run: $(runfile)
+	./$(runfile)
+
+$(runfile): $(ofiles)
 
 clean:
-	rm -f $(ofiles) lishp
+	rm -f $(ofiles) $(runfile)
