@@ -13,5 +13,6 @@ int main(void) {
     pop_rootish_stack(rs, &temp);
     printf("Popped: %llu\n", temp);
   }
+  cleanup_rootish_stack(&rs);
   return 0;
 }

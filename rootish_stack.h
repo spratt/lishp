@@ -23,4 +23,6 @@ int pop_rootish_stack(RootishStack* rs, uint64_t* pos);
 
 int size_rootish_stack(RootishStack* rs);
 
+int cleanup_rootish_stack(RootishStack** rsp);
+
 #endif

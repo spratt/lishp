@@ -5,6 +5,7 @@
 int create_rootish_stack(RootishStack** rs) {
   *rs = malloc(sizeof(RootishStack));
   (*rs)->last = NULL;
+  (*rs)->size = 0;
   return 0;
 }
 
@@ -17,7 +18,7 @@ int push_rootish_stack(RootishStack* rs, uint64_t pos) {
     } else {
       next->capacity = rs->last->size + 1;
     }
-    next->pos = malloc(sizeof(uint64_t) * next->size);
+    next->pos = malloc(sizeof(uint64_t) * next->capacity);
     next->prev = rs->last;
     rs->last = next;
   }
@@ -41,4 +42,18 @@ int pop_rootish_stack(RootishStack* rs, uint64_t* pos) {
 
 int size_rootish_stack(RootishStack* rs) {
   return rs->size;
+}
+
+int cleanup_rootish_stack(RootishStack** rsp) {
+  RootishStack* rs = *rsp;
+  while(rs->size > 0) {
+    rs->size -= rs->last->size;
+    ListNode* prev = rs->last->prev;
+    free(rs->last->pos);
+    free(rs->last);
+    rs->last = prev;
+  }
+  free(rs);
+  (*rsp) = NULL;
+  return 0;
 }
