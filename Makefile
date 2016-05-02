@@ -1,21 +1,44 @@
-CFLAGS=-std=c99 -Wall -Wextra -Werror -pedantic -g
+CFLAGS=-std=c11 -Wall -Wextra -Werror -pedantic -g
 VALGRIND=valgrind
 
-runfile=lishp
-cfiles=$(wildcard *.c)
-ofiles=$(patsubst %.c, %.o, $(cfiles))
+SRCDIR=src
+BUILD=build
+RUNFILES=runfiles
 
-.PHONY: all run clean valgrind
+cbins=$(wildcard $(RUNFILES)/*.c)
+bins=$(patsubst $(RUNFILES)/%.c, $(BUILD)/%, $(cbins))
+cfiles=$(wildcard $(SRCDIR)/*.c)
+ofiles=$(patsubst $(SRCDIR)/%.c, $(BUILD)/%.o, $(cfiles))
 
-all: $(runfile)
+TESTDIR=tests
+TESTBUILD=$(BUILD)/tests
+ctests=$(wildcard $(TESTDIR)/*.c)
+tests=$(patsubst $(TESTDIR)/%.c, $(TESTBUILD)/%, $(ctests))
 
-run: $(runfile)
-	./$(runfile)
+.PHONY: all test run clean valgrind
 
-valgrind: $(runfile)
-	$(VALGRIND) ./$(runfile)
+all: $(tests) $(bins)
 
-$(runfile): $(ofiles)
+test: $(tests)
+	@$(foreach test,$(tests), ./$(test))
+
+run: $(bins)
+	$(foreach bin,$(bins), ./$(bin))
+
+valgrind: $(bins) $(tests)
+	$(foreach bin,$(bins), $(VALGRIND) ./$(bin))
+	@$(foreach test,$(tests), $(VALGRIND) ./$(test))
+
+$(BUILD)/% : $(ofiles) $(RUNFILES)/%.c
+	$(CC) $(CFLAGS) $(CFLAGS) $^ -o $@
+
+$(BUILD)/%.o : $(SRCDIR)/%.c
+	@mkdir -p $(BUILD)
+	$(CC) -c $(CFLAGS) $(CFLAGS) $< -o $@
+
+$(TESTBUILD)/% : $(ofiles) $(TESTDIR)/%.c
+	@mkdir -p $(TESTBUILD)
+	$(CC) $(CFLAGS) $(CFLAGS) $^ -o $@
 
 clean:
-	rm -f $(ofiles) $(runfile)
+	rm -rf *.dSYM $(BUILD)
