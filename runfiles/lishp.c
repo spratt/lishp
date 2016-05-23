@@ -1,5 +1,6 @@
 #include "../src/rootish_stack.h"
+#include "../src/lisp.h"
 
 int main(void) {
-  return 0;
+  return repl("Lishp 0.1", "> ");
 }

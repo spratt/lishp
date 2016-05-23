@@ -1,3 +1,4 @@
+CC=clang
 CFLAGS=-std=c11 -Wall -Wextra -Werror -pedantic -g
 VALGRIND=valgrind
 
@@ -34,11 +35,11 @@ $(BUILD)/% : $(ofiles) $(RUNFILES)/%.c
 
 $(BUILD)/%.o : $(SRCDIR)/%.c
 	@mkdir -p $(BUILD)
-	$(CC) -c $(CFLAGS) $(CFLAGS) $< -o $@
+	$(CC) -c $(CFLAGS) $< -o $@
 
 $(TESTBUILD)/% : $(ofiles) $(TESTDIR)/%.c
 	@mkdir -p $(TESTBUILD)
-	$(CC) $(CFLAGS) $(CFLAGS) $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@
 
 clean:
 	rm -rf *.dSYM $(BUILD)
